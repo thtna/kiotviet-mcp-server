@@ -7,28 +7,26 @@ const GITHUB_TOKEN = process.env.GITHUB_PERSONAL_ACCESS_TOKEN;
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 const REPO_NAME = "kiotviet-invoice-vault";
 
-export async function uploadInvoiceToVault(filePath: string): Promise<string> {
+export async function uploadInvoiceToVault(filePath: string, retailer: string = "unclassified"): Promise<string> {
   if (!GITHUB_TOKEN) {
     throw new Error("Không tìm thấy GITHUB_PERSONAL_ACCESS_TOKEN trong cấu hình MCP.");
   }
 
-  // 1. Kiểm tra file tồn tại
   if (!fs.existsSync(filePath)) {
     throw new Error(`File không tồn tại: ${filePath}`);
   }
 
-  // 2. Đọc file dưới dạng base64
   const fileContent = fs.readFileSync(filePath, { encoding: "base64" });
   const fileName = path.basename(filePath);
   
-  // Tạo đường dẫn trong repo (Tổ chức theo năm/tháng)
+  // Tạo đường dẫn trong repo chuyên nghiệp: [GianHang]/[Nam]/[Thang]/[TenFile]
   const date = new Date();
-  const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  // Đảm bảo tên file duy nhất trong kho
-  const uniqueFileName = `${Date.now()}_${fileName}`;
-  const repoPath = `invoices/${yearMonth}/${uniqueFileName}`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  
+  const repoPath = `${retailer}/${year}/${month}/${day}_${Date.now()}_${fileName}`;
 
-  // 3. Lấy tên người dùng hiện tại
   const { data: user } = await octokit.users.getAuthenticated();
   const owner = user.login;
 
