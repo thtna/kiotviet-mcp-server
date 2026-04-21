@@ -1,0 +1,21 @@
+{
+  "name": "kiotviet-mcp-server",
+  "version": "1.0.0",
+  "description": "KiotViet Smart-Entry MCP Server với Hệ thống Miễn dịch",
+  "main": "build/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.5.0",
+    "@octokit/rest": "^21.0.0",
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.5"
+  }
+}
